@@ -35,7 +35,7 @@ import csv
 def reader(filename):
     df = pd.read_csv(filename)
     df = df[df['SUICIDE_AGE'] < 30]
-    # df = df[df['SUICIDE_AGE'] > ]
+    # df = df[df['SUICIDE_AGE'] > 10]
     df = shuffle(df)
     return df
 
@@ -49,6 +49,6 @@ df = df.drop('Unnamed: 0', axis =1)
 df = df.sample(n=200)
 print(df.shape)
 # final = pd.ExcelWriter('./For_25.xlsx')
-input()
+# input()
 df.to_excel('./Neg_For_30.xlsx', index=False, header=True)
 
