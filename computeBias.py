@@ -68,10 +68,7 @@ def getData():
     return df
 
 df = getData()
-# print(df.head(5))
-
-
-
+df.to_excel('Final_File_before_label_encoding.xlsx', index=False, header=True)
 
 ## Label Encoding
 from sklearn.preprocessing import LabelEncoder
