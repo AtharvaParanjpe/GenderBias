@@ -16,9 +16,7 @@ flag_linear = False
 flag_logistic = False
 
 
-df = pd.read_excel('Final_File.xlsx')
-print(df.head())
-input()
+df = pd.read_excel('Final_File_min13.xlsx')
 df = df.groupby(['GENDER'])
 
 def scatterPlot(x_data,y_data):
@@ -30,19 +28,13 @@ def scatterPlot(x_data,y_data):
         plt.ylabel('Suicidality')
     plt.show()
 
-
-def compute_metrics(TP, TN, FP, FN, auc):
+def compute_metrics(TP, TN, FP, FN, auc, fpr, tpr):
     TPR = TP/(TP+FN)
     TNR = TN/(TN+FP) 
-    # PPV = TP/(TP+FP)
-    # NPV = TN/(TN+FN)
     FPR = FP/(FP+TN)
     FNR = FN/(TP+FN)
-    # FDR = FP/(TP+FP)
     ACC = (TP+TN)/(TP+FP+FN+TN)
-    # print(TPR, TNR, FPR, FNR, ACC, auc)
-    return [TPR, TNR, FPR, FNR, ACC, auc]
-
+    return [TPR, TNR, FPR, FNR, ACC, auc], fpr, tpr
 
 def compute_svm(data):
     global flag_svm
@@ -54,15 +46,13 @@ def compute_svm(data):
     svclassifier = SVC(kernel='rbf')
     svclassifier.fit(X_train, y_train)
     y_pred = svclassifier.predict(X_test)
-    # print(confusion_matrix(y_test,y_pred))
     tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
     fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred)
-    if(flag_svm):
-        flag_svm = False
-        metrics.plot_roc_curve(svclassifier, X_test, y_test) 
-        plt.show()
     auc = metrics.auc(fpr, tpr)
-    return compute_metrics(tp, tn, fp, fn, auc)
+    if(len(fpr)==2):
+        fpr = [fpr[0], 0.5, fpr[1]]
+        tpr = [tpr[0], 0.5, tpr[1]]
+    return compute_metrics(tp, tn, fp, fn, auc, fpr, tpr)
 
 ################ Linear Model ################
 
@@ -80,12 +70,13 @@ def linearRegression(data):
     y_pred = reg.predict(X_test)
     y_pred = np.array(y_pred)
     y_pred = np.where(y_pred<0,0,1)
-    # print(confusion_matrix(y_test,y_pred))
     tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
     fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred)
     auc = metrics.auc(fpr, tpr)
-    return compute_metrics(tp, tn, fp, fn, auc)
-
+    if(len(fpr)==2):
+        fpr = [fpr[0], 0.5, fpr[1]]
+        tpr = [tpr[0], 0.5, tpr[1]]
+    return compute_metrics(tp, tn, fp, fn, auc, fpr, tpr)
 
 def logisticRegression(data):
     global flag_logistic
@@ -100,11 +91,10 @@ def logisticRegression(data):
     fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred)
     tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
     auc = metrics.auc(fpr, tpr)
-    if(flag_logistic):
-        flag_logistic = False
-        metrics.plot_roc_curve(LR, X_test, y_test) 
-        plt.show()
-    return compute_metrics(tp, tn, fp, fn, auc)
+    if(len(fpr)==2):
+        fpr = [fpr[0], 0.5, fpr[1]]
+        tpr = [tpr[0], 0.5, tpr[1]]
+    return compute_metrics(tp, tn, fp, fn, auc, fpr, tpr)
 
 def decision_tree(data):
     global flag_decision_tree
@@ -117,43 +107,76 @@ def decision_tree(data):
     clf = clf.fit(X_train, y_train)
     y_pred = clf.predict(X_test)
     
-    fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred)
-    if(flag_decision_tree):
-        flag_decision_tree = False
-        metrics.plot_roc_curve(clf, X_test, y_test) 
-        plt.show()
     tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
+    fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred)
     auc = metrics.auc(fpr, tpr)
-    return compute_metrics(tp, tn, fp, fn, auc)
+    if(len(fpr)==2):
+        fpr = [fpr[0], 0.5, fpr[1]]
+        tpr = [tpr[0], 0.5, tpr[1]]
+    return compute_metrics(tp, tn, fp, fn, auc, fpr, tpr)
     
-
-# print("TPR, TNR, FPR, FNR, Accuracy, AUC")
 final_list = []
 
-for key,group in df:
-    group = group.drop(["GENDER"], axis=1)
-    a = []
-    b = []
-    c = []
-    d = []
+def showGraph(fpr, tpr, auc, classifier):
+    plt.figure()
+    plt.plot(fpr, tpr,label= classifier + ", Auc="+str(round(auc,4)))
+    plt.legend(loc=0)
+    plt.show()
 
-    # flag_svm = True
-    # flag_decision_tree = True
-    # flag_linear = True
+for (key,group) in df:
+    group = group.drop(["GENDER"], axis=1)
+    
+    a, a_fpr, a_tpr = [], [], []
+    b, b_fpr, b_tpr = [], [], []
+    c, c_fpr, c_tpr = [], [], []
+    d, d_fpr, d_tpr = [], [], []
+
+    flag_svm = True
+    flag_decision_tree = True
+    flag_linear = True
     flag_logistic = True
 
     group = shuffle(group)
+
     for i in range(100):
-        a.append(linearRegression(group))
-        b.append(logisticRegression(group))
-        c.append(compute_svm(group))
-        d.append(decision_tree(group))
-        # input()
+
+        linear = linearRegression(group)
+        logistic = logisticRegression(group)
+        svc = compute_svm(group)
+        dt = decision_tree(group)
+
+        a.append(linear[0])
+        b.append(logistic[0])
+        c.append(svc[0])
+        d.append(dt[0])
+
+        a_fpr.append(linear[1])
+        a_tpr.append(linear[2])
+        b_fpr.append(logistic[1])
+        b_tpr.append(logistic[2])
+        c_fpr.append(svc[1])
+        c_tpr.append(svc[2])
+        d_fpr.append(dt[1])
+        d_tpr.append(dt[2])
     
     a = np.average(a, axis=0).tolist()
     b = np.average(b, axis=0).tolist()
     c = np.average(c, axis=0).tolist()
     d = np.average(d, axis=0).tolist()
+
+    a_fpr = np.average(a_fpr, axis=0).tolist()
+    a_tpr = np.average(a_tpr, axis=0).tolist()
+    b_fpr = np.average(b_fpr, axis=0).tolist()
+    b_tpr = np.average(b_tpr, axis=0).tolist()
+    c_fpr = np.average(c_fpr, axis=0).tolist()
+    c_tpr = np.average(c_tpr, axis=0).tolist()
+    d_fpr = np.average(d_fpr, axis=0).tolist()
+    d_tpr = np.average(d_tpr, axis=0).tolist()
+
+    showGraph(d_fpr, d_tpr, d[-1], "Decision Tree")
+    showGraph(b_fpr, b_tpr, b[-1], "Logistic Regression")
+    showGraph(c_fpr, c_tpr, c[-1], "SVC")
+    
 
     a = ["Linear_"+str(key)] + a
     b = ["Logistic_"+str(key)] + b
@@ -161,11 +184,12 @@ for key,group in df:
     d = ["Decision Tree_"+str(key)] + d
 
     final_list = final_list+[a]+[b]+[c]+[d]
-    
 
 columns = ["Model", "TPR", "TNR", "FPR", "FNR", "Accuracy", "AUC"]
 df = pd.DataFrame(data= final_list, columns=columns)
 
 ## Uncomment to generate final results
-# df.to_excel('Result.xlsx', index=False, header=True)
+# c = input("Save this file?")
+# if(c=="Y" or c=="y"):
+#     df.to_excel('Result_with_min_13(4).xlsx', index=False, header=True)
 

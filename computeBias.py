@@ -48,7 +48,7 @@ def getData():
     df_positive["Age"] = df_positive["SUICIDE_AGE"] 
     df_positive = df_positive.drop(["SUICIDE_AGE"],axis = 1)
 
-    df_negative = pd.read_excel('./neg/Neg_For_30.xlsx')
+    df_negative = pd.read_excel('./neg/Neg_For_30_min13.xlsx')
     df_negative["Age"] = df_negative["SUICIDE_AGE"] 
     df_negative = df_negative.drop(["SUICIDE_AGE"],axis = 1)
     
@@ -68,10 +68,7 @@ def getData():
     return df
 
 df = getData()
-# print(df.head(5))
-
-
-
+df.to_excel('Final_File_before_label_encoding.xlsx', index=False, header=True)
 
 ## Label Encoding
 from sklearn.preprocessing import LabelEncoder
@@ -101,5 +98,5 @@ x, y = sm.fit_sample(df_equalize_x, df_equalize_y.ravel())
 x['GENDER'] = y
 df = shuffle(x)
 
-df.to_excel('Final_File.xlsx', index=False, header=True)
+df.to_excel('Final_File_min13.xlsx', index=False, header=True)
 
