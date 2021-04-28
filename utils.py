@@ -9,7 +9,7 @@ def reader(filename):
     df = pd.read_csv(filename)
     df = df[df['SUICIDE_AGE'] < 30]  ## replace 30 for upper limit
     ## Uncomment below for applying lower limit
-    # df = df[df['SUICIDE_AGE'] > 10]
+    df = df[df['SUICIDE_AGE'] > 12]
     df = shuffle(df)
     return df
 
@@ -25,5 +25,5 @@ df = df.sample(n=200)
 print(df.shape)
 # final = pd.ExcelWriter('./For_25.xlsx')
 # input()
-df.to_excel('./neg/Neg_For_30.xlsx', index=False, header=True)
+df.to_excel('./neg/Neg_For_30_min13.xlsx', index=False, header=True)
 
