@@ -131,6 +131,8 @@ for (key,group) in df:
     c, c_fpr, c_tpr = [], [], []
     d, d_fpr, d_tpr = [], [], []
 
+    distribution_list = []
+
     flag_svm = True
     flag_decision_tree = True
     flag_linear = True
@@ -138,7 +140,7 @@ for (key,group) in df:
 
     group = shuffle(group)
 
-    for i in range(100):
+    for i in range(1000):
 
         linear = linearRegression(group)
         logistic = logisticRegression(group)
@@ -150,32 +152,37 @@ for (key,group) in df:
         c.append(svc[0])
         d.append(dt[0])
 
-        a_fpr.append(linear[1])
-        a_tpr.append(linear[2])
-        b_fpr.append(logistic[1])
-        b_tpr.append(logistic[2])
-        c_fpr.append(svc[1])
-        c_tpr.append(svc[2])
-        d_fpr.append(dt[1])
-        d_tpr.append(dt[2])
+        distribution_list.append([linear[0][-2], logistic[0][-2], svc[0][-2], dt[0][-2]])
+        
+        # print([linear[0][-2], logistic[0][-2], svc[0][-2], dt[0][-2]]) 
+        # input()
+
+        # a_fpr.append(linear[1])
+        # a_tpr.append(linear[2])
+        # b_fpr.append(logistic[1])
+        # b_tpr.append(logistic[2])
+        # c_fpr.append(svc[1])
+        # c_tpr.append(svc[2])
+        # d_fpr.append(dt[1])
+        # d_tpr.append(dt[2])
     
     a = np.average(a, axis=0).tolist()
     b = np.average(b, axis=0).tolist()
     c = np.average(c, axis=0).tolist()
     d = np.average(d, axis=0).tolist()
 
-    a_fpr = np.average(a_fpr, axis=0).tolist()
-    a_tpr = np.average(a_tpr, axis=0).tolist()
-    b_fpr = np.average(b_fpr, axis=0).tolist()
-    b_tpr = np.average(b_tpr, axis=0).tolist()
-    c_fpr = np.average(c_fpr, axis=0).tolist()
-    c_tpr = np.average(c_tpr, axis=0).tolist()
-    d_fpr = np.average(d_fpr, axis=0).tolist()
-    d_tpr = np.average(d_tpr, axis=0).tolist()
+    # a_fpr = np.average(a_fpr, axis=0).tolist()
+    # a_tpr = np.average(a_tpr, axis=0).tolist()
+    # b_fpr = np.average(b_fpr, axis=0).tolist()
+    # b_tpr = np.average(b_tpr, axis=0).tolist()
+    # c_fpr = np.average(c_fpr, axis=0).tolist()
+    # c_tpr = np.average(c_tpr, axis=0).tolist()
+    # d_fpr = np.average(d_fpr, axis=0).tolist()
+    # d_tpr = np.average(d_tpr, axis=0).tolist()
 
-    showGraph(d_fpr, d_tpr, d[-1], "Decision Tree")
-    showGraph(b_fpr, b_tpr, b[-1], "Logistic Regression")
-    showGraph(c_fpr, c_tpr, c[-1], "SVC")
+    # showGraph(d_fpr, d_tpr, d[-1], "Decision Tree")
+    # showGraph(b_fpr, b_tpr, b[-1], "Logistic Regression")
+    # showGraph(c_fpr, c_tpr, c[-1], "SVC")
     
 
     a = ["Linear_"+str(key)] + a
@@ -184,11 +191,15 @@ for (key,group) in df:
     d = ["Decision Tree_"+str(key)] + d
 
     final_list = final_list+[a]+[b]+[c]+[d]
-
+    column_names_for_distribution = ["Linear", "Logistic", "SVM", "Decision Tree"]
+    distribution = pd.DataFrame(data= distribution_list, columns=column_names_for_distribution)
+    distribution.to_excel('./Temporary Distribution/Data_Points_For_Accuracy_' + str(key) + '.xlsx', index=False, header=True)
 columns = ["Model", "TPR", "TNR", "FPR", "FNR", "Accuracy", "AUC"]
 df = pd.DataFrame(data= final_list, columns=columns)
 
 ## Uncomment to generate final results
+
+
 # c = input("Save this file?")
 # if(c=="Y" or c=="y"):
 #     df.to_excel('Result_with_min_13(4).xlsx', index=False, header=True)
