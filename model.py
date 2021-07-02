@@ -125,13 +125,8 @@ def showGraph(fpr, tpr, auc, classifier):
 
 for (key,group) in df:
     group = group.drop(["GENDER"], axis=1)
-    
-    a, a_fpr, a_tpr = [], [], []
-    b, b_fpr, b_tpr = [], [], []
-    c, c_fpr, c_tpr = [], [], []
-    d, d_fpr, d_tpr = [], [], []
-
     distribution_list = []
+    a, b, c, d = [], [], [], []
 
     flag_svm = True
     flag_decision_tree = True
@@ -141,66 +136,68 @@ for (key,group) in df:
     group = shuffle(group)
 
     for i in range(1000):
+        final_list = []
 
         linear = linearRegression(group)
         logistic = logisticRegression(group)
         svc = compute_svm(group)
         dt = decision_tree(group)
 
-        a.append(linear[0])
-        b.append(logistic[0])
-        c.append(svc[0])
-        d.append(dt[0])
+        a.append([linear[0]])
+        b.append([logistic[0]])
+        c.append([svc[0]])
+        d.append([dt[0]])
 
         distribution_list.append([linear[0][-2], logistic[0][-2], svc[0][-2], dt[0][-2]])
-        
         # print([linear[0][-2], logistic[0][-2], svc[0][-2], dt[0][-2]]) 
         # input()
 
-        # a_fpr.append(linear[1])
-        # a_tpr.append(linear[2])
-        # b_fpr.append(logistic[1])
-        # b_tpr.append(logistic[2])
-        # c_fpr.append(svc[1])
-        # c_tpr.append(svc[2])
-        # d_fpr.append(dt[1])
-        # d_tpr.append(dt[2])
-    
-    a = np.average(a, axis=0).tolist()
-    b = np.average(b, axis=0).tolist()
-    c = np.average(c, axis=0).tolist()
-    d = np.average(d, axis=0).tolist()
+    a_mean = np.average(a, axis=0).tolist()
+    b_mean = np.average(b, axis=0).tolist()
+    c_mean = np.average(c, axis=0).tolist()
+    d_mean = np.average(d, axis=0).tolist()
+   
+    a_min = np.min(a, axis=0).tolist()
+    b_min = np.min(b, axis=0).tolist()
+    c_min = np.min(c, axis=0).tolist()
+    d_min = np.min(d, axis=0).tolist()
 
-    # a_fpr = np.average(a_fpr, axis=0).tolist()
-    # a_tpr = np.average(a_tpr, axis=0).tolist()
-    # b_fpr = np.average(b_fpr, axis=0).tolist()
-    # b_tpr = np.average(b_tpr, axis=0).tolist()
-    # c_fpr = np.average(c_fpr, axis=0).tolist()
-    # c_tpr = np.average(c_tpr, axis=0).tolist()
-    # d_fpr = np.average(d_fpr, axis=0).tolist()
-    # d_tpr = np.average(d_tpr, axis=0).tolist()
+    a_max = np.max(a, axis=0).tolist()
+    b_max = np.max(b, axis=0).tolist()
+    c_max = np.max(c, axis=0).tolist()
+    d_max = np.max(d, axis=0).tolist()
 
-    # showGraph(d_fpr, d_tpr, d[-1], "Decision Tree")
-    # showGraph(b_fpr, b_tpr, b[-1], "Logistic Regression")
-    # showGraph(c_fpr, c_tpr, c[-1], "SVC")
-    
+    a_mean = ["Linear"] + a_mean[0]
+    b_mean = ["Logistic"] + b_mean[0]
+    c_mean = ["SVM"] + c_mean[0]
+    d_mean = ["Decision Tree"] + d_mean[0]
 
-    a = ["Linear_"+str(key)] + a
-    b = ["Logistic_"+str(key)] + b
-    c = ["SVM_"+str(key)] + c
-    d = ["Decision Tree_"+str(key)] + d
+    a_min = ["Linear"] + a_min[0]
+    b_min = ["Logistic"] + b_min[0]
+    c_min = ["SVM"] + c_min[0]
+    d_min = ["Decision Tree"] + d_min[0]
 
-    final_list = final_list+[a]+[b]+[c]+[d]
+    a_max = ["Linear"] + a_max[0]
+    b_max = ["Logistic"] + b_max[0]
+    c_max = ["SVM"] + c_max[0]
+    d_max = ["Decision Tree"] + d_max[0]
+
     column_names_for_distribution = ["Linear", "Logistic", "SVM", "Decision Tree"]
+    columns = ["Model", "TPR", "TNR", "FPR", "FNR", "Accuracy", "AUC"]
+    
     distribution = pd.DataFrame(data= distribution_list, columns=column_names_for_distribution)
     distribution.to_excel('./Temporary Distribution/Data_Points_For_Accuracy_' + str(key) + '.xlsx', index=False, header=True)
-columns = ["Model", "TPR", "TNR", "FPR", "FNR", "Accuracy", "AUC"]
-df = pd.DataFrame(data= final_list, columns=columns)
 
-## Uncomment to generate final results
+    final_list = [a_mean, b_mean, c_mean, d_mean]
+    
+    mean_distribution = pd.DataFrame(data= final_list, columns=columns)
+    mean_distribution.to_excel('./Temporary Distribution/Mean Distibution - ' + str(key) + '.xlsx', index=False, header=True)
 
+    final_list = [a_min, b_min, c_min, d_min]
+    min_distribution = pd.DataFrame(data= final_list, columns=columns)
+    min_distribution.to_excel('./Temporary Distribution/Min Distibution - ' + str(key) + '.xlsx', index=False, header=True)
 
-# c = input("Save this file?")
-# if(c=="Y" or c=="y"):
-#     df.to_excel('Result_with_min_13(4).xlsx', index=False, header=True)
+    final_list = [a_max, b_max, c_max, d_max]
+    max_distribution = pd.DataFrame(data= final_list, columns=columns)
+    max_distribution.to_excel('./Temporary Distribution/Max Distibution - ' + str(key) + '.xlsx', index=False, header=True)
 
