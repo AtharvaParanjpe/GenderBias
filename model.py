@@ -125,16 +125,8 @@ def showGraph(fpr, tpr, auc, classifier):
 
 for (key,group) in df:
     group = group.drop(["GENDER"], axis=1)
-<<<<<<< HEAD
-    
-    a, a_fpr, a_tpr = [], [], []
-    b, b_fpr, b_tpr = [], [], []
-    c, c_fpr, c_tpr = [], [], []
-    d, d_fpr, d_tpr = [], [], []
-=======
     distribution_list = []
     a, b, c, d = [], [], [], []
->>>>>>> Stats
 
     flag_svm = True
     flag_decision_tree = True
@@ -143,59 +135,14 @@ for (key,group) in df:
 
     group = shuffle(group)
 
-<<<<<<< HEAD
-    for i in range(5):
-=======
     for i in range(1000):
         final_list = []
->>>>>>> Stats
 
         linear = linearRegression(group)
         logistic = logisticRegression(group)
         svc = compute_svm(group)
         dt = decision_tree(group)
 
-<<<<<<< HEAD
-        a.append(linear[0])
-        b.append(logistic[0])
-        c.append(svc[0])
-        d.append(dt[0])
-
-        a_fpr.append(linear[1])
-        a_tpr.append(linear[2])
-        b_fpr.append(logistic[1])
-        b_tpr.append(logistic[2])
-        c_fpr.append(svc[1])
-        c_tpr.append(svc[2])
-        d_fpr.append(dt[1])
-        d_tpr.append(dt[2])
-    
-    a = np.average(a, axis=0).tolist()
-    b = np.average(b, axis=0).tolist()
-    c = np.average(c, axis=0).tolist()
-    d = np.average(d, axis=0).tolist()
-
-    a_fpr = np.average(a_fpr, axis=0).tolist()
-    a_tpr = np.average(a_tpr, axis=0).tolist()
-    b_fpr = np.average(b_fpr, axis=0).tolist()
-    b_tpr = np.average(b_tpr, axis=0).tolist()
-    c_fpr = np.average(c_fpr, axis=0).tolist()
-    c_tpr = np.average(c_tpr, axis=0).tolist()
-    d_fpr = np.average(d_fpr, axis=0).tolist()
-    d_tpr = np.average(d_tpr, axis=0).tolist()
-
-    showGraph(d_fpr, d_tpr, d[-1], "Decision Tree")
-    showGraph(b_fpr, b_tpr, b[-1], "Logistic Regression")
-    showGraph(c_fpr, c_tpr, c[-1], "SVC")
-    
-
-    a = ["Linear_"+str(key)] + a
-    b = ["Logistic_"+str(key)] + b
-    c = ["SVM_"+str(key)] + c
-    d = ["Decision Tree_"+str(key)] + d
-
-    final_list = final_list+[a]+[b]+[c]+[d]
-=======
         a.append([linear[0]])
         b.append([logistic[0]])
         c.append([svc[0]])
@@ -245,20 +192,12 @@ for (key,group) in df:
     
     mean_distribution = pd.DataFrame(data= final_list, columns=columns)
     mean_distribution.to_excel('./Temporary Distribution/Mean Distibution - ' + str(key) + '.xlsx', index=False, header=True)
->>>>>>> Stats
 
     final_list = [a_min, b_min, c_min, d_min]
     min_distribution = pd.DataFrame(data= final_list, columns=columns)
     min_distribution.to_excel('./Temporary Distribution/Min Distibution - ' + str(key) + '.xlsx', index=False, header=True)
 
-<<<<<<< HEAD
-## Uncomment to generate final results
-c = input("Save this file?")
-if(c=="Y" or c=="y"):
-    df.to_excel('Result_with_min_13(4).xlsx', index=False, header=True)
-=======
     final_list = [a_max, b_max, c_max, d_max]
     max_distribution = pd.DataFrame(data= final_list, columns=columns)
     max_distribution.to_excel('./Temporary Distribution/Max Distibution - ' + str(key) + '.xlsx', index=False, header=True)
->>>>>>> Stats
 
