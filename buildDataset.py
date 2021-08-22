@@ -244,4 +244,4 @@ def generate_negative_samples():
 
     patientRecordsDf.to_csv("./Negative Samples/neg "+str(abcd))
 
-generate_negative_samples()  
+generate_negative_samples()   

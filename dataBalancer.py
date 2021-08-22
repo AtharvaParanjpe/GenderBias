@@ -40,7 +40,7 @@ def cleanData(df):
     # extract city
     df['BIRTHPLACE'] = df['BIRTHPLACE'].str.split(' ', 0, expand=True)
     
-    return df
+    return df 
 
 
 def getData():

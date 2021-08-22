@@ -26,4 +26,4 @@ print(df.shape)
 # final = pd.ExcelWriter('./For_25.xlsx')
 # input()
 df.to_excel('./neg/Neg_For_30_min13.xlsx', index=False, header=True)
-
+ 

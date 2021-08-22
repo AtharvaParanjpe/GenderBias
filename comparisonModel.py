@@ -7,7 +7,7 @@ import csv
 import matplotlib.pyplot as plt  
 import seaborn as sns
 
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split 
 from sklearn.svm import SVC
 from sklearn import metrics
 from sklearn.metrics import classification_report, confusion_matrix
