@@ -35,9 +35,7 @@ We then evaluated each group of dataset on three different models namely, Linear
 
 ## 4. Results
 
-So far, for gender the results can be found in "results.xlsx" 
-
-Final_File_min_13 will give you the final preprocessed data with SMOTE balancing.
-
-
+The "Final_File_before_label_encoding.xlsx" represents the resulting data with feature removal.
+The "Final_File_min13.xlsx" represents the final data being sent to the model.
+The results can be found in "Result_with_min_13.xlsx".  
 
