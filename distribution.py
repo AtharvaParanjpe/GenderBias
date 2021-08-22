@@ -14,14 +14,13 @@ maxValsFemale = f.max()
 meanValsMale = m.mean()
 meanValsFemale = f.mean()
 
+## Dataframe objects
 df_male = pd.concat([minValsMale, maxValsMale, meanValsMale], axis=1)
 df_female = pd.concat([minValsFemale, maxValsFemale, meanValsFemale], axis=1)
 df_male.columns = ['Min_Male', 'Max_Male', 'Mean_Male']
 df_female.columns = ['Min_Female', 'Max_Female', 'Mean_Female']
-# print(df_male)
-# print(df_female)
-# input()
 
+## Plot distributions Male
 kwargs = dict(alpha=0.5)
 fig, axs = plt.subplots(2, 2)
 fig.suptitle("Male")
@@ -53,9 +52,7 @@ for ax in axs.flat:
 plt.show()
 
 
-
-
-
+## Plot distributions female
 kwargs = dict(alpha=0.5)
 fig, axs = plt.subplots(2, 2)
 plt.xlim([0.0, 1.0])

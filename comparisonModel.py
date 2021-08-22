@@ -1,3 +1,5 @@
+## For Generating comparison graphs between datasets
+
 import numpy as np
 import pandas as pd
 from sklearn.utils import shuffle
@@ -15,7 +17,7 @@ flag_decision_tree = False
 flag_linear = False
 flag_logistic = False
 
-
+## Generate a file with min age 10 to proceed
 df = pd.read_excel('Final_File_min10.xlsx')
 df2 = pd.read_excel('Final_File_min13.xlsx')
 # print(df.head())

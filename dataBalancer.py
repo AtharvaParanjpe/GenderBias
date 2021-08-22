@@ -57,12 +57,6 @@ def getData():
     df_negative = df_negative.assign(target=0)
     df = df_positive.append(df_negative, ignore_index=True)
     
-    # plot the data 
-    # p = sns.countplot(data=df, x = 'target', hue="GENDER")
-    # # p.legend([],[], frameon=False)
-    # p.plot()
-    # # p.show()
-    
     df = shuffle(df)
     df = cleanData(df)
     return df

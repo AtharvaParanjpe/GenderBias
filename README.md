@@ -37,5 +37,7 @@ We then evaluated each group of dataset on three different models namely, Linear
 
 So far, for gender the results can be found in "results.xlsx" 
 
+Final_File_min_13 will give you the final preprocessed data with SMOTE balancing.
+
 
 
