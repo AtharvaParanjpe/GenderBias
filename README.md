@@ -36,6 +36,8 @@ We then evaluated each group of dataset on three different models namely, Linear
 ## 4. Results
 
 The "Final_File_before_label_encoding.xlsx" represents the resulting data with feature removal.
+
 The "Final_File_min13.xlsx" represents the final data being sent to the model.
+
 The results can be found in "Result_with_min_13.xlsx".  
 
